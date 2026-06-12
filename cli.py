@@ -51,7 +51,9 @@ try:
     import tools.run_worker_inference_tool
     import tools.generate_excel_report_tool
 except Exception as e:
-    pass
+    import traceback
+    print("CRITICAL IMPORT ERROR in grocery tools:", e)
+    traceback.print_exc()
 
 logger = logging.getLogger(__name__)
 
