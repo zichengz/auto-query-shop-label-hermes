@@ -44,6 +44,15 @@ from pathlib import Path
 from datetime import datetime
 from typing import List, Dict, Any, Optional
 
+# Explicitly import grocery tools to guarantee they are registered in the tools registry
+try:
+    import tools.run_spark_feature_tool
+    import tools.augment_shop_knowledge_tool
+    import tools.run_worker_inference_tool
+    import tools.generate_excel_report_tool
+except Exception as e:
+    pass
+
 logger = logging.getLogger(__name__)
 
 # Suppress startup messages for clean CLI experience
