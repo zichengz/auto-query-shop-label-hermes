@@ -15,7 +15,8 @@ description: 执行外卖平台商超搜索 (Query-Shop) 相关性大模型打�
 - `mock`: 是否为测试模式（默认为 False，即真实执行）
 
 ## 2. 自动化执行步骤 (Pipeline Steps)
-你必须**严格按照以下 4 个步骤的顺序**连续调用工具。
+你必须**严格按照以下 4 个步骤的顺序**，直接调用我为你提供的内置 Function Calling 工具（即 `run_spark_feature`, `augment_shop_knowledge` 等）。
+**绝对不要使用 bash/python 命令去手动执行 tools/ 下的文件！** 必须使用你的工具调用（Tool Calling）能力。
 **不要在步骤之间停下来询问用户许可**，请在前置工具成功返回后，直接读取它的返回路径，并作为参数传递给下一个工具。
 
 ### Step 1: 提取 Hive 宽表特征 (Feature Extraction)

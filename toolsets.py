@@ -70,6 +70,9 @@ _HERMES_CORE_TOOLS = [
     "kanban_unblock",
     # Computer use (macOS, gated on cua-driver being installed via check_fn)
     "computer_use",
+    # Grocery Labeling Pipeline tools
+    "run_spark_feature", "augment_shop_knowledge", 
+    "run_worker_inference", "generate_excel_report",
 ]
 
 # Webhook events may originate from untrusted third-party content (for example,
