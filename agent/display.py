@@ -242,7 +242,7 @@ def build_tool_preview(tool_name: str, args: dict, max_len: int | None = None) -
 
     key = primary_args.get(tool_name)
     if not key:
-        for fallback_key in ("query", "text", "command", "path", "name", "prompt", "code", "goal"):
+        for fallback_key in ("query", "text", "command", "path", "file_path", "name", "prompt", "code", "goal"):
             if fallback_key in args:
                 key = fallback_key
                 break
@@ -787,7 +787,7 @@ class KawaiiSpinner:
 # Cute tool message (completion line that replaces the spinner)
 # =========================================================================
 
-_ERROR_SUFFIX_MAX_LEN = 48
+_ERROR_SUFFIX_MAX_LEN = 200
 
 
 def _trim_error(msg: str) -> str:
