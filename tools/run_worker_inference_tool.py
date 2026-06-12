@@ -6,7 +6,6 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Dict, Any
 
 from tools.registry import registry, tool_error
-from run_agent import AIAgent
 
 # Add legacy scripts to path to import templates
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -68,6 +67,7 @@ def format_prompt(info: list, prompt_template_v: str, prompt_template_single: st
     return prompt, index, ori_query, query, shop_id, query_intent, shop_name, version
 
 def process_chunk_with_worker(chunk_idx: int, lines: list, agent_config: dict, explain_num: int, output_dir: str) -> str:
+    from run_agent import AIAgent
     worker = AIAgent(ephemeral_system_prompt="You are a strict data labeling assistant.", **agent_config)
     output_path = os.path.join(output_dir, f"output_chunk_{chunk_idx}.jsonl")
     results = []
