@@ -1,11 +1,11 @@
 ---
 name: grocery-labeling-pipeline
-description: 执行完整的生鲜大模型打标流水线（Feature Extraction -> Knowledge Augmentation -> Multi-agent Inference -> Report Generation）
+description: 执行外卖平台商超搜索 (Query-Shop) 相关性大模型打标流水线（Feature Extraction -> Knowledge Augmentation -> Multi-agent Inference -> Report Generation）
 ---
 
-# Grocery Labeling Pipeline 标准操作流程 (SOP)
+# 外卖商超搜索 Query-Shop 相关性打标 SOP
 
-当用户要求执行“生鲜打标”、“跑全套流水线”、“跑一下生鲜流”等相关意图时，必须严格遵守以下执行规范，无需再让用户提供详细的运行逻辑。
+当用户要求执行“商超搜索打标”、“跑全套流水线”、“跑一下 query-shop 打标”等相关意图时，必须严格遵守以下执行规范，无需再让用户提供详细的运行逻辑。
 
 ## 1. 必需的运行参数
 在开始执行前，检查用户是否提供了以下三个必需参数。如果缺失，请先询问用户：
