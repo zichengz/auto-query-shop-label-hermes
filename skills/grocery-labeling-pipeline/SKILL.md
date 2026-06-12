@@ -1,6 +1,8 @@
 ---
 name: grocery-labeling-pipeline
 description: 执行外卖平台商超搜索 (Query-Shop) 相关性大模型打标流水线（Feature Extraction -> Knowledge Augmentation -> Multi-agent Inference -> Report Generation）
+toolsets:
+  - grocery
 ---
 
 # 外卖商超搜索 Query-Shop 相关性打标 SOP
