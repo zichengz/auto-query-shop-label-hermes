@@ -325,6 +325,15 @@ TOOLSETS = {
         "includes": []
     },
 
+    "grocery": {
+        "description": "Grocery Labeling Pipeline tools",
+        "tools": [
+            "run_spark_feature", "augment_shop_knowledge",
+            "run_worker_inference", "generate_excel_report"
+        ],
+        "includes": []
+    },
+
 
     # Scenario-specific toolsets
     
@@ -402,7 +411,7 @@ TOOLSETS = {
     "hermes-cli": {
         "description": "Full interactive CLI toolset - all default tools plus cronjob management",
         "tools": _HERMES_CORE_TOOLS,
-        "includes": []
+        "includes": ["grocery"]
     },
 
     "hermes-cron": {

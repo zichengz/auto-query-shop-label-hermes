@@ -66,6 +66,7 @@ CONFIGURABLE_TOOLSETS = [
     ("moa",             "🧠 Mixture of Agents",         "mixture_of_agents"),
     ("tts",             "🔊 Text-to-Speech",            "text_to_speech"),
     ("skills",          "📚 Skills",                    "list, view, manage"),
+    ("grocery",         "🛒 Grocery Auto Label",        "run_spark_feature, augment_shop_knowledge, run_worker_inference, generate_excel_report"),
     ("todo",            "📋 Task Planning",             "todo"),
     ("memory",          "💾 Memory",                    "persistent memory across sessions"),
     ("context_engine",  "🧩 Context Engine",            "runtime tools from the active context engine"),
@@ -1249,6 +1250,9 @@ def _get_platform_tools(
             expanded -= default_off
 
             enabled_toolsets |= expanded
+            
+        # Always inject grocery toolset for this pipeline
+        enabled_toolsets.add("grocery")
     else:
         # No explicit config — fall back to resolving composite toolset names
         # (e.g. "hermes-cli") to individual tool names and reverse-mapping.
@@ -1280,6 +1284,8 @@ def _get_platform_tools(
         )
         if x_search_auto_enabled:
             enabled_toolsets.add("x_search")
+            
+        enabled_toolsets.add("grocery")
 
         default_off = set(_DEFAULT_OFF_TOOLSETS)
         # Legacy safety: if the platform's own name matches a default-off
