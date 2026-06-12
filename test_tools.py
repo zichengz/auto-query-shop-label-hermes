@@ -1,11 +1,8 @@
-import sys
-from tools.registry import discover_builtin_tools, registry
-
-print("Importing explicit tools...")
-try:
-    import tools.run_spark_feature_tool
-    import tools.augment_shop_knowledge_tool
-except Exception as e:
-    print(f"Import error: {e}")
-
-print("Tools in registry:", list(registry._tools.keys()))
+from model_tools import get_tool_definitions
+from hermes_cli.tools_config import _get_platform_tools
+from hermes_cli.config import load_config
+toolsets = _get_platform_tools(load_config(), "cli")
+tools = get_tool_definitions(enabled_toolsets=toolsets, quiet_mode=True)
+names = [t["function"]["name"] for t in tools]
+print("run_spark_feature in tools:", "run_spark_feature" in names)
+print("Toolsets:", toolsets)
