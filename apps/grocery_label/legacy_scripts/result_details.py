@@ -59,6 +59,8 @@ def get_acc_onscore(rel_info_file, predict_file_path, output_file_path, test_fil
             #     continue
             ori_query = data['ori_query']
             shop_id = data['shop_id']
+            if (ori_query, shop_id) not in data_dict:
+                continue
             index = int(data['index'])
             data_dict[(ori_query, shop_id)]['query_intent_type'] = data['query_intent_type']
             if data['valid'] == 1:
@@ -83,6 +85,9 @@ def get_acc_onscore(rel_info_file, predict_file_path, output_file_path, test_fil
             if len(parts) == 2:
                 ori_query = parts[0]
                 shop_id = parts[1]
+
+                if (ori_query, shop_id) not in data_dict:
+                    continue
 
                 index = data_dict[(ori_query, shop_id)]['index']
                 normal_query = data_dict[(ori_query, shop_id)]['normal_query']
