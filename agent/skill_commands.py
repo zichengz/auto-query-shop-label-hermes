@@ -97,7 +97,8 @@ def _load_skill_payload(skill_identifier: str, task_id: str | None = None) -> tu
         return None
 
     if not loaded_skill.get("success"):
-        return None
+        error_msg = loaded_skill.get("error", "Unknown error")
+        return None, None, f"{skill_identifier} (Error: {error_msg})"
 
     skill_name = str(loaded_skill.get("name") or normalized)
     skill_path = str(loaded_skill.get("path") or "")
@@ -492,7 +493,11 @@ def build_preloaded_skills_prompt(
         seen.add(identifier)
 
         loaded = _load_skill_payload(identifier, task_id=task_id)
-        if not loaded:
+        if loaded and loaded[0] is None:
+            # It returned an error string in the third element
+            missing.append(loaded[2])
+            continue
+        elif not loaded:
             missing.append(identifier)
             continue
 
