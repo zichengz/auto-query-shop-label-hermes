@@ -77,10 +77,10 @@ def run_spark_feature(user_name: str, file_path: str, use_date: str, mock: bool 
         # Ensure we run from legacy_scripts directory so spark-submit can find get_manual.py
         current_dir = os.path.dirname(os.path.abspath(__file__))
         legacy_script_dir = os.path.abspath(os.path.join(current_dir, "../apps/grocery_label/legacy_scripts"))
-        subprocess.run(spark_cmd, shell=True, check=True, cwd=legacy_script_dir)
+        subprocess.run(spark_cmd, shell=True, check=True, cwd=legacy_script_dir, capture_output=True, text=True)
         
         # 4. Download Result
-        subprocess.run(f"hadoop fs -cat {sample_hdfs}/* > {sample_path}", shell=True, check=True)
+        subprocess.run(f"hadoop fs -cat {sample_hdfs}/* > {sample_path}", shell=True, check=True, capture_output=True, text=True)
         
         return json.dumps({
             "status": "success",
@@ -89,7 +89,7 @@ def run_spark_feature(user_name: str, file_path: str, use_date: str, mock: bool 
         }, ensure_ascii=False)
         
     except subprocess.CalledProcessError as e:
-        return tool_error(f"Subprocess failed with error: {str(e)}")
+        return tool_error(f"Subprocess failed with exit code {e.returncode}. Stderr: {e.stderr}")
     except Exception as e:
         return tool_error(f"Unexpected error: {str(e)}")
 

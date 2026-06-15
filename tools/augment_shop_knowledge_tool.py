@@ -81,7 +81,7 @@ def augment_shop_knowledge(sample_path: str, mock: bool = False) -> str:
     try:
         subprocess.run(
             ["python", script_path, shop_info_dir, sample_path, sample_path_new],
-            check=True
+            check=True, capture_output=True, text=True
         )
         return json.dumps({
             "status": "success",
@@ -89,7 +89,7 @@ def augment_shop_knowledge(sample_path: str, mock: bool = False) -> str:
             "sample_path_new": sample_path_new
         }, ensure_ascii=False)
     except subprocess.CalledProcessError as e:
-        return tool_error(f"add_shop_info.py failed: {str(e)}")
+        return tool_error(f"add_shop_info.py failed with exit code {e.returncode}. Stderr: {e.stderr}")
     except Exception as e:
         return tool_error(f"Unexpected error: {str(e)}")
 

@@ -23,7 +23,7 @@ export*
 __pycache__/model_tools.cpython-310.pyc
 __pycache__/web_tools.cpython-310.pyc
 logs/
-data/
+# data/
 .pytest_cache/
 test_durations.json
 .pytest-cache/
@@ -38,7 +38,7 @@ run_datagen_megascience_glm4-6.sh
 run_datagen_sonnet.sh
 source-data/*
 run_datagen_megascience_glm4-6.sh
-data/*
+# data/*
 node_modules/
 browser-use/
 agent-browser/
