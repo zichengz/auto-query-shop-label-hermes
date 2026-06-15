@@ -134,5 +134,5 @@ if __name__ == "__main__":
     predict_file_path = sys.argv[2]
     output_file_path = sys.argv[3]
     test_file = sys.argv[4]
-    explain_num = sys.argv[5]
+    explain_num = int(sys.argv[5])
     get_acc_onscore(rel_info_file, predict_file_path, output_file_path, test_file, explain_num)

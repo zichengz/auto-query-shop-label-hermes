@@ -82,13 +82,17 @@ def generate_excel_report_fixed(predict_jsonl: str, file_path: str, sample_path:
     details_script = os.path.join(legacy_script_dir, "result_details.py")
     
     try:
-        subprocess.run(
+        res1 = subprocess.run(
             ["python", "-u", process_script, predict_jsonl, file_path, result_path, str(explain_num)],
-            check=True
+            check=True,
+            capture_output=True,
+            text=True
         )
-        subprocess.run(
+        res2 = subprocess.run(
             ["python", "-u", details_script, sample_path, predict_jsonl, result_details_path, file_path, str(explain_num)],
-            check=True
+            check=True,
+            capture_output=True,
+            text=True
         )
         return json.dumps({
             "status": "success",
@@ -96,7 +100,12 @@ def generate_excel_report_fixed(predict_jsonl: str, file_path: str, sample_path:
             "result_details_path": result_details_path
         }, ensure_ascii=False)
     except subprocess.CalledProcessError as e:
-        return tool_error(f"Report generation script failed: {str(e)}")
+        error_msg = f"Report generation script failed (exit code {e.returncode}):\n"
+        if e.stdout:
+            error_msg += f"STDOUT:\n{e.stdout}\n"
+        if e.stderr:
+            error_msg += f"STDERR:\n{e.stderr}\n"
+        return tool_error(error_msg)
     except Exception as e:
         return tool_error(f"Unexpected error: {str(e)}")
 
