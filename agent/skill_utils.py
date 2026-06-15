@@ -250,12 +250,57 @@ def get_external_skills_dirs() -> List[Path]:
     parsing a non-trivial config dominates ``hermes`` cold-start time
     when the cache is absent.
     """
-    config_path = get_config_path()
-    if not config_path.exists():
-        return []
+    from hermes_constants import get_hermes_home
+    hermes_home = get_hermes_home()
+    local_skills = get_skills_dir().resolve()
+    repo_skills = Path(__file__).resolve().parent.parent / "skills"
+    
+    def _read_config_dirs() -> List[Path]:
+        config_path = get_config_path()
+        if not config_path.exists():
+            return []
 
-    # Cache key: (absolute path, mtime_ns).  stat() is ~2us vs ~85ms for
-    # the full YAML parse, so the fast path is nearly free.
+        try:
+            parsed = yaml_load(config_path.read_text(encoding="utf-8"))
+        except Exception:
+            return []
+        if not isinstance(parsed, dict):
+            return []
+
+        skills_cfg = parsed.get("skills")
+        if not isinstance(skills_cfg, dict):
+            return []
+
+        raw_dirs = skills_cfg.get("external_dirs")
+        if not raw_dirs:
+            return []
+        if isinstance(raw_dirs, str):
+            raw_dirs = [raw_dirs]
+        if not isinstance(raw_dirs, list):
+            return []
+
+        result = []
+        seen_inner = set()
+        for entry in raw_dirs:
+            entry = str(entry).strip()
+            if not entry:
+                continue
+            expanded = os.path.expanduser(os.path.expandvars(entry))
+            p = Path(expanded)
+            if not p.is_absolute():
+                p = (hermes_home / p).resolve()
+            else:
+                p = p.resolve()
+            if p == local_skills:
+                continue
+            if p in seen_inner:
+                continue
+            if p.is_dir():
+                seen_inner.add(p)
+                result.append(p)
+        return result
+        
+    config_path = get_config_path()
     try:
         stat = config_path.stat()
         cache_key: Tuple[str, int] = (str(config_path), stat.st_mtime_ns)
@@ -265,59 +310,14 @@ def get_external_skills_dirs() -> List[Path]:
     if cache_key is not None:
         cached = _EXTERNAL_DIRS_CACHE.get(cache_key)
         if cached is not None:
-            # Return a copy so callers can't mutate the cached list.
             return list(cached)
-
-    try:
-        parsed = yaml_load(config_path.read_text(encoding="utf-8"))
-    except Exception:
-        return []
-    if not isinstance(parsed, dict):
-        return []
-
-    skills_cfg = parsed.get("skills")
-    if not isinstance(skills_cfg, dict):
-        return []
-
-    raw_dirs = skills_cfg.get("external_dirs")
-    if not raw_dirs:
-        result: List[Path] = []
-        if cache_key is not None:
-            _EXTERNAL_DIRS_CACHE[cache_key] = list(result)
-        return result
-    if isinstance(raw_dirs, str):
-        raw_dirs = [raw_dirs]
-    if not isinstance(raw_dirs, list):
-        return []
-
-    from hermes_constants import get_hermes_home
-
-    hermes_home = get_hermes_home()
-    local_skills = get_skills_dir().resolve()
-    seen: Set[Path] = set()
-    result = []
-
-    for entry in raw_dirs:
-        entry = str(entry).strip()
-        if not entry:
-            continue
-        # Expand ~ and environment variables
-        expanded = os.path.expanduser(os.path.expandvars(entry))
-        p = Path(expanded)
-        # Resolve relative paths against HERMES_HOME, not cwd
-        if not p.is_absolute():
-            p = (hermes_home / p).resolve()
-        else:
-            p = p.resolve()
-        if p == local_skills:
-            continue
-        if p in seen:
-            continue
-        if p.is_dir():
-            seen.add(p)
-            result.append(p)
-        else:
-            logger.debug("External skills dir does not exist, skipping: %s", p)
+            
+    result = _read_config_dirs()
+    
+    seen = set(result)
+    if repo_skills.is_dir() and repo_skills not in seen and repo_skills != local_skills:
+        seen.add(repo_skills)
+        result.append(repo_skills)
 
     if cache_key is not None:
         _EXTERNAL_DIRS_CACHE[cache_key] = list(result)
