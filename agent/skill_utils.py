@@ -315,9 +315,23 @@ def get_external_skills_dirs() -> List[Path]:
     result = _read_config_dirs()
     
     seen = set(result)
-    if repo_skills.is_dir() and repo_skills not in seen and repo_skills != local_skills:
-        seen.add(repo_skills)
-        result.append(repo_skills)
+    repo_skills = Path(__file__).resolve().parent.parent / "skills"
+    
+    candidates = [repo_skills]
+    try:
+        candidates.append(Path.cwd() / "skills")
+    except Exception:
+        pass
+    try:
+        import sys
+        candidates.append(Path(sys.argv[0]).resolve().parent / "skills")
+    except Exception:
+        pass
+
+    for candidate in candidates:
+        if candidate.is_dir() and candidate not in seen and candidate != local_skills:
+            seen.add(candidate)
+            result.append(candidate)
 
     if cache_key is not None:
         _EXTERNAL_DIRS_CACHE[cache_key] = list(result)
