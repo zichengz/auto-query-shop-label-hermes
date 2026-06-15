@@ -16,9 +16,10 @@ def get_acc_onscore(rel_info_file, predict_file_path, output_file_path, test_fil
         lines = f.readlines()
     print(len(lines))
 
+    skipped_lines = 0
     for line in lines:
         if len(line.strip().split("\t")) != 19:
-            print(line)
+            skipped_lines += 1
             continue
 
         index, ori_query, query, query_tag, query_intent, query_may_shop, query_may_shop_name, query_may_shop_tag, query_may_item, shop_id, shop_name, nor_shop_name, category_l3_tag_local, category_l3_tag_local_idx2, manual_tag1, manual_tag2, manual_tag3, item_name_list, item_tag_list = line.strip().split("\t")
@@ -43,6 +44,9 @@ def get_acc_onscore(rel_info_file, predict_file_path, output_file_path, test_fil
         data_dict[(ori_query, shop_id)]['item_name_list'] = item_name_list
         data_dict[(ori_query, shop_id)]['item_tag_list'] = item_tag_list
         data_dict[(ori_query, shop_id)]['knowledge'] = f"query:{ori_query}, shop_name:{shop_name}"
+
+    if skipped_lines > 0:
+        print(f"注意: 跳过了 {skipped_lines} 行由于列数不等于 19 而格式错误的数据。")
 
     # 创建数据列表来存储所有行
     rows = []
