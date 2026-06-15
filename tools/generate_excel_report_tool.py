@@ -101,10 +101,11 @@ def generate_excel_report_fixed(predict_jsonl: str, file_path: str, sample_path:
         }, ensure_ascii=False)
     except subprocess.CalledProcessError as e:
         error_msg = f"Report generation script failed (exit code {e.returncode}):\n"
-        if e.stdout:
-            error_msg += f"STDOUT:\n{e.stdout}\n"
         if e.stderr:
             error_msg += f"STDERR:\n{e.stderr}\n"
+        if e.stdout:
+            stdout_str = e.stdout if len(e.stdout) < 2000 else "...[TRUNCATED]...\n" + e.stdout[-2000:]
+            error_msg += f"STDOUT (tail):\n{stdout_str}\n"
         return tool_error(error_msg)
     except Exception as e:
         return tool_error(f"Unexpected error: {str(e)}")

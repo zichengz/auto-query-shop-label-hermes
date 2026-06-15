@@ -107,10 +107,10 @@ def get_acc_onscore(rel_info_file, predict_file_path, output_file_path, test_fil
                 item_tag_list = data_dict[(ori_query, shop_id)]['item_tag_list']
                 knowledge = data_dict[(ori_query, shop_id)]['knowledge']
 
-                pre_Query_Type = data_dict[(ori_query, shop_id)]['pre_Query_Type']
-                query_intent_type = data_dict[(ori_query, shop_id)]['query_intent_type']
-                Score = data_dict[(ori_query, shop_id)]['Score']
-                Explanation = data_dict[(ori_query, shop_id)]['Explanation']
+                pre_Query_Type = data_dict[(ori_query, shop_id)].get('pre_Query_Type', '-')
+                query_intent_type = data_dict[(ori_query, shop_id)].get('query_intent_type', '-')
+                Score = data_dict[(ori_query, shop_id)].get('Score', -1)
+                Explanation = data_dict[(ori_query, shop_id)].get('Explanation', '-')
 
                 # 将行数据添加到列表中
                 rows.append([
