@@ -73,7 +73,7 @@ def get_acc_onscore(rel_info_file, predict_file_path, output_file_path, test_fil
             if (ori_query, shop_id) not in data_dict:
                 continue
             index = int(data['index'])
-            data_dict[(ori_query, shop_id)]['query_intent_type'] = data['query_intent_type']
+            data_dict[(ori_query, shop_id)]['query_intent_type'] = data.get('query_intent_type', data.get('query_intent', '-'))
             if data['valid'] == 1:
                 if index < explain_num:
                     data_dict[(ori_query, shop_id)]['pre_Query_Type'] = data['prediction']['Query_Type']
