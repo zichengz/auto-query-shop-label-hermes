@@ -113,8 +113,22 @@ def process_chunk_with_worker(chunk_idx: int, lines: list, agent_config: dict, e
             results.append(result)
             
         except Exception as e:
-            pass
-            
+            # Do not silently drop rows on API failure!
+            valid = f'api error: {str(e)}'
+            result = {
+                "ori_query": info.get('query', ''),
+                "query_name": info.get('normalquery', ''),
+                "shop_name": info.get('shop_name', ''),
+                "sp_key": info.get('query', '') + "-" + info.get('sid', ''),
+                "intent": info.get('query_intent', ''),
+                "valid": valid,
+                "prompt": "",
+                "prediction": "error",
+                "index": int(info.get('index', -1)),
+                "prompt_ver": "error",
+                "shop_id": info.get('sid', '')
+            }
+            results.append(result)
     with open(output_path, 'w', encoding='utf-8') as f:
         for res in results:
             f.write(json.dumps(res, ensure_ascii=False) + '\n')
