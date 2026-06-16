@@ -18,11 +18,18 @@ def get_acc_onscore(rel_info_file, predict_file_path, output_file_path, test_fil
 
     skipped_lines = 0
     for line in lines:
-        if len(line.strip().split("\t")) != 19:
+        parts = line.strip().split("\t")
+        if len(parts) == 19:
+            index, ori_query, query, query_tag, query_intent, query_may_shop, query_may_shop_name, query_may_shop_tag, query_may_item, shop_id, shop_name, nor_shop_name, category_l3_tag_local, category_l3_tag_local_idx2, manual_tag1, manual_tag2, manual_tag3, item_name_list, item_tag_list = parts
+        elif len(parts) == 16:
+            index, ori_query, query, query_tag, query_intent, shop_id, shop_name, nor_shop_name, category_l3_tag_local, category_l3_tag_local_idx2, manual_tag1, manual_tag2, manual_tag3, item_name_list, item_tag_list, shop_info = parts
+            query_may_shop, query_may_shop_name, query_may_shop_tag, query_may_item = "", "", "", ""
+        elif len(parts) == 15:
+            index, ori_query, query, query_tag, query_intent, shop_id, shop_name, nor_shop_name, category_l3_tag_local, category_l3_tag_local_idx2, manual_tag1, manual_tag2, manual_tag3, item_name_list, item_tag_list = parts
+            query_may_shop, query_may_shop_name, query_may_shop_tag, query_may_item = "", "", "", ""
+        else:
             skipped_lines += 1
             continue
-
-        index, ori_query, query, query_tag, query_intent, query_may_shop, query_may_shop_name, query_may_shop_tag, query_may_item, shop_id, shop_name, nor_shop_name, category_l3_tag_local, category_l3_tag_local_idx2, manual_tag1, manual_tag2, manual_tag3, item_name_list, item_tag_list = line.strip().split("\t")
 
         if (ori_query, shop_id) not in data_dict:
             data_dict[(ori_query, shop_id)] = {}
